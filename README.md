@@ -85,7 +85,7 @@ text
     └── user_12345.json       # Пример файла истории пользователя
 
 Безопасность 🔒
-API-ключи хранятся в config.ini (добавьте в .gitignore)
+API-ключи хранятся в config.ini 
 
 История диалогов сохраняется локально
 
@@ -198,7 +198,7 @@ text
 └── user_12345.json # Example of user history file
 
 Security 🔒
-API keys are stored in config.ini (add to .gitignore)
+API keys are stored in config.ini 
 
 Dialog history is saved locally
 
