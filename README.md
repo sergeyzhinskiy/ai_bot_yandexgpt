@@ -22,7 +22,7 @@ ai Telegram bot with YandexGPT
 
 1. Клонируйте репозиторий:
 ```bash
-git clone https://github.com/ваш-репозиторий.git
+git clone https://github.com/sergeyzhinskiy/ai_bot_yandexgpt.git
 cd telegram-yandexgpt-bot
 
 Установите зависимости:
@@ -135,7 +135,7 @@ Integration of Telegram with YandexGPT to create an intelligent assistant with a
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-repository.git
+git clone https://github.com/sergeyzhinskiy/ai_bot_yandexgpt.git
 cd telegram-yandexgpt-bot
 
 Install dependencies:
