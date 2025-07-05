@@ -24,13 +24,13 @@ ai Telegram bot with YandexGPT
 ```bash
 git clone https://github.com/sergeyzhinskiy/ai_bot_yandexgpt.git
 cd telegram-yandexgpt-bot
-
+```
 Установите зависимости:
-bash
+```bash
 pip install -r requirements.txt
-
+```
 Создайте файл конфигурации config.ini:
-ini
+```ini
 [Telegram]
 api_id = YOUR_API_ID
 api_hash = YOUR_API_HASH
@@ -38,13 +38,13 @@ username = YOUR_BOT_USERNAME
 
 [Yandex]
 yandexgpt_api = YOUR_YANDEX_GPT_API_KEY
-
+```
 Запустите бота:
-bash
+```bash
 python yand4.py
-
+```
 Конфигурация ⚙️
-python
+```python
 # Настройки диалога
 MAX_HISTORY_LENGTH = 15       # Макс. сообщений в контексте
 MAX_TOKENS = 4000             # Макс. токенов в ответе
@@ -54,7 +54,7 @@ MAX_HISTORY_MESSAGES = 100    # Макс. сообщений для загруз
 SYSTEM_PROMPT = """
 Ты - дружелюбный помощник в Telegram...
 """
-
+```
 Логирование 📝
 Все события логируются в telegram_bot.log
 
@@ -76,14 +76,14 @@ SYSTEM_PROMPT = """
 Весь диалог сохраняется в JSON-файл
 
 Структура файлов 📂
-text
+```text
 ├── yand4.py                  # Основной скрипт бота
 ├── config.ini                # Файл конфигурации (не включен в репозиторий)
 ├── requirements.txt          # Зависимости
 ├── telegram_bot.log          # Файл логов (автогенерация)
 └── chat_history/             # Папка с историей диалогов
     └── user_12345.json       # Пример файла истории пользователя
-
+```
 Безопасность 🔒
 API-ключи хранятся в config.ini 
 
@@ -137,13 +137,13 @@ Integration of Telegram with YandexGPT to create an intelligent assistant with a
 ```bash
 git clone https://github.com/sergeyzhinskiy/ai_bot_yandexgpt.git
 cd telegram-yandexgpt-bot
-
+```
 Install dependencies:
-bash
+```bash
 pip install -r requirements.txt
-
+```
 Create a config.ini configuration file:
-ini
+```ini
 [Telegram]
 api_id = YOUR_API_ID
 api_hash = YOUR_API_HASH
@@ -151,13 +151,13 @@ username = YOUR_BOT_USERNAME
 
 [Yandex]
 yandexgpt_api = YOUR_YANDEX_GPT_API_KEY
-
+```
 Run the bot:
-bash
+```bash
 python yand4.py
-
+```
 Configuration ⚙️
-python
+```python
 # Dialog settings
 MAX_HISTORY_LENGTH = 15 # Max. messages in context
 MAX_TOKENS = 4000 # Max. tokens in response
@@ -167,7 +167,7 @@ MAX_HISTORY_MESSAGES = 100 # Max. messages to download from Telegram
 SYSTEM_PROMPT = """
 You are a friendly assistant in Telegram...
 """
-
+```
 Logging 📝
 All events are logged in telegram_bot.log
 
@@ -189,14 +189,14 @@ The response is processed and sent with an artificial delay
 The entire dialogue is saved to a JSON file
 
 File structure 📂
-text
+```text
 ├── yand4.py # Main bot script
 ├── config.ini # Configuration file (not included in the repository)
 ├── requirements.txt # Dependencies
 ├── telegram_bot.log # Log file (auto-generated)
 └── chat_history/ # Dialog history folder
 └── user_12345.json # Example of user history file
-
+```
 Security 🔒
 API keys are stored in config.ini 
 
