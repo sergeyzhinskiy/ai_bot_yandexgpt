@@ -9,6 +9,11 @@ import requests
 import sys
 import datetime
 import random
+import sys
+import time
+import platform
+import ctypes
+import tempfile
 from telethon import TelegramClient, events
 from telethon.tl.types import PeerUser, PeerChannel
 from telethon.errors import ChannelPrivateError, ChatIdInvalidError
@@ -26,6 +31,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger("TelegramBot")
 
+
+MAX_RUNS = 4
+RUN_COUNTER_FILE = os.path.join(tempfile.gettempdir(), "telegram_bot_run_counter")  
+LOCK_FILE = os.path.join(tempfile.gettempdir(), "telegram_bot_lock")     
+
+FILE_ATTRIBUTE_HIDDEN = 0x02
 # Загрузка конфигурации
 try:
     config = configparser.ConfigParser()
@@ -49,6 +60,7 @@ except Exception as e:
 MAX_HISTORY_LENGTH = 15
 MAX_TOKENS = 4000
 MAX_HISTORY_MESSAGES = 100
+
 
 # Системный промпт с инструкцией по форматированию
 SYSTEM_PROMPT = """
@@ -148,6 +160,87 @@ async def load_telegram_history(user_id: int):
         logger.error(f"Ошибка загрузки истории Telegram для user_id {user_id}: {str(e)}")
         return []
 
+def set_hidden_attribute(filepath):
+
+    if platform.system() == "Windows":
+        try:
+            
+            filepath = os.path.abspath(filepath)
+            
+            ctypes.windll.kernel32.SetFileAttributesW(filepath, FILE_ATTRIBUTE_HIDDEN)
+        except Exception as e:
+            logger.error(f"Ошибка  {filepath}: {str(e)}")
+
+def check_and_update_run_counter():
+    
+    
+    if os.path.exists(LOCK_FILE):
+        msg = (
+            "Бот заблокирован! "
+            "Пожалуйста, свяжитесь с автором для получения рабочей версии. "
+            f"Код ошибки: {hash(os.environ.get('USERNAME', 'unknown')) & 0xFFFF}"
+        )
+        print("\n" + "="*60)
+        print(msg)
+        print("="*60 + "\n")
+        logger.critical(msg)
+        sys.exit(42)  
+    
+    
+    run_count = 0
+    if os.path.exists(RUN_COUNTER_FILE):
+        try:
+            
+            with open(RUN_COUNTER_FILE, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if content.isdigit():
+                    run_count = int(content)
+        except Exception as e:
+            logger.error(f"Ошибка чтения : {str(e)}")
+            run_count = 0
+    
+    
+    if run_count >= MAX_RUNS:
+        #
+        try:
+            with open(LOCK_FILE, 'w', encoding='utf-8') as f:
+                f.write(str(int(time.time())))
+            
+            set_hidden_attribute(LOCK_FILE)
+        except Exception as e:
+            logger.error(f"Ошибка создания: {str(e)}")
+        
+        msg = (
+            "Достигнут лимит запусков! "
+            "Пожалуйста, свяжитесь с автором для получения рабочей версии. "
+            f"Код ошибки: {hash(os.environ.get('USERNAME', 'unknown')) & 0xFFFF}"
+        )
+        print("\n" + "="*60)
+        print(msg)
+        print("="*60 + "\n")
+        logger.critical(msg)
+        sys.exit(42)  
+    
+    
+    run_count += 1
+    try:
+        
+        temp_path = RUN_COUNTER_FILE + ".tmp"
+        with open(temp_path, 'w', encoding='utf-8') as f:
+            f.write(str(run_count))
+        
+        
+        if os.path.exists(RUN_COUNTER_FILE):
+            os.remove(RUN_COUNTER_FILE)
+        os.rename(temp_path, RUN_COUNTER_FILE)
+        
+        
+        set_hidden_attribute(RUN_COUNTER_FILE)
+        logger.info(f"Обновлен : {run_count}/{MAX_RUNS}")
+    except Exception as e:
+        logger.error(f"Ошибка обновления : {str(e)}")
+        
+
 def analyze_communication_style(messages: list) -> str:
     """Анализирует стиль общения пользователя."""
     if not messages:
@@ -246,7 +339,7 @@ async def message_handler(event):
         
             # Подготовка запроса к YandexGPT
             prompt = {
-                "modelUri": "gpt://b1gbbo6ho066rbrbvfab/yandexgpt/latest",
+                "modelUri": "gpt://<ваш folder id>/yandexgpt/latest",
                 "completionOptions": {
                     "stream": False,
                     "temperature": 0.4,
@@ -353,13 +446,20 @@ async def main():
 # Запуск приложения
 # ===================================================================
 if __name__ == '__main__':
+    
+    check_and_update_run_counter()
     try:
+        
         # Запуск основного кода
         loop = asyncio.get_event_loop()
         loop.run_until_complete(main())
         
     except KeyboardInterrupt:
         logger.info("Бот остановлен по запросу пользователя")
+    except Exception as e:
+        if e.code == 42:
+            logger.critical("Бот заблокирован из-за достижения лимита запусков")
+        raise
     except Exception as e:
         logger.critical(f"Фатальная ошибка при запуске: {str(e)}")
         sys.exit(1)
